@@ -32,7 +32,7 @@
                 hourHandColor:'#222222',
                 alarmHandColor:'#FFFFFF',
                 alarmHandTipColor:'#026729',
-                hourCorrection:'+0',
+                tzOffset:0,
                 alarmCount:1,
                 showNumerals:true
             };
@@ -49,7 +49,7 @@
             el.hourHandColor = settings.hourHandColor;
             el.alarmHandColor = settings.alarmHandColor;
             el.alarmHandTipColor = settings.alarmHandTipColor;
-            el.hourCorrection = settings.hourCorrection;
+            el.tzOffset = settings.tzOffset;
             el.showNumerals = settings.showNumerals;
 
             el.brandText = settings.brandText;
@@ -113,6 +113,10 @@
                 return ( Math.PI / 180 ) * deg;
             }     
 
+            function getBrandTextFont() {
+                return '100 ' + parseInt(el.size / 8, 10) + 'px helvetica';
+            }
+
             function drawDial(color, bgcolor){
                 var dialRadius,
                     dialBackRadius,
@@ -140,7 +144,14 @@
                 ctx.fillStyle = bgcolor;
                 ctx.fill();
 
-                 
+                var wideLoad = false;
+                if (el.brandText !== undefined){
+                    ctx.font = getBrandTextFont();
+                    if (ctx.measureText(el.brandText).width > el.size * .6) {
+                        wideLoad = true;
+                    }
+                }
+
                 for (i=1; i<=60; i+=1) {
                     ang=Math.PI/30*i;
                     sang=Math.sin(ang);
@@ -162,7 +173,7 @@
                         ctx.beginPath();
                         ctx.fillStyle = color;
 
-                        if(el.showNumerals){
+                        if (el.showNumerals && (!wideLoad || (i !== 20 && i !== 40))) {
                             ctx.fillText(text,nx-(textWidth/2),ny);
                         }
                     //minute marker
@@ -180,19 +191,26 @@
                     ctx.moveTo(sx,sy);
                     ctx.lineTo(ex,ey);
                     ctx.stroke();
-                } 
+                }
 
                 if(el.brandText !== undefined){
-                    ctx.font = '100 ' + parseInt(el.size/28,10) + 'px helvetica';
-                    brandtextWidth = ctx.measureText (el.brandText).width;
-                    ctx.fillText(el.brandText,-(brandtextWidth/2),(el.size/6)); 
+                    ctx.font = getBrandTextFont();
+                    brandtextWidth = ctx.measureText(el.brandText).width;
+                    var maxTextWidth = el.size * .8;
+                    if (brandtextWidth > maxTextWidth) {
+                        brandtextWidth = maxTextWidth;
+                    }
+                    ctx.fillText(el.brandText,-(brandtextWidth/2),(el.size/6), brandtextWidth);
                 }
 
                 if(el.brandText2 !== undefined){
                     ctx.textBaseline = 'middle';
                     ctx.font = '100 ' + parseInt(el.size/44,10) + 'px helvetica';
                     brandtextWidth2 = ctx.measureText (el.brandText2).width;
-                    ctx.fillText(el.brandText2,-(brandtextWidth2/2),(el.size/5)); 
+                    if (brandtextWidth2 > maxTextWidth) {
+                        brandtextWidth2 = maxTextWidth;
+                    }
+                    ctx.fillText(el.brandText2,-(brandtextWidth2/2),(el.size/5), brandtextWidth2);
                 }
 
             }
@@ -330,38 +348,6 @@
                 ctx.restore();
             }
 
-            function timeCorrection(difference, unit) {
-                var parts = difference.split('.');
-                if (unit === 'hours') {
-                    return hoursCorrection(parts[0]);
-                } else if (unit === 'minutes') {
-                    var minutes = parts[1];
-                    if (!(+ minutes)) return 0;
-                    return minutesCorrection(difference.charAt(0) + '0.' + minutes);
-                }
-            }
-
-            function hoursCorrection(num){
-                if(num !== '+0' && num !== ''){
-                    if(num.charAt(0) === '+'){
-                        //addNum
-                        return + num.substring(1);
-                    }
-                    else{
-                        //subNum
-                        return - num.substring(1);
-                    }
-                }
-                else{
-                    return 0;
-                }
-            }
-
-            function minutesCorrection(num) {
-                var minutesInHours = Number(num);
-                return minutesInHours ? minutesInHours * 60 : 0;
-            }
-
             //listener
             if(el.onAlarm !== undefined){
             	$(el).on('onAlarm', function(e){
@@ -398,12 +384,12 @@
                     allExtM,
                     allAlarmM;
 
-                theDate = new Date();
-                s = theDate.getSeconds();
-                mins = theDate.getMinutes();
-                m = (mins + timeCorrection(el.hourCorrection, 'minutes')) + (s/60);
-                hours = theDate.getHours();
-                h = twelvebased(hours + timeCorrection(el.hourCorrection, 'hours')) + (m/60);
+                theDate = new Date(new Date().getTime() + el.tzOffset);
+                s = theDate.getUTCSeconds();
+                mins = theDate.getUTCMinutes();
+                m = mins + s / 60;
+                hours = theDate.getUTCHours();
+                h = twelvebased(hours) + m / 60;
 
                 ctx.clearRect(-radius,-radius,el.size,el.size);
 
