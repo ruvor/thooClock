@@ -3,6 +3,7 @@
 // Twitter: @thooyork
 // Version 0.9.20
 // Copyright (c) 2013 thooyork
+// Emdev Patched
 
 // MIT License, http://opensource.org/licenses/MIT
 
