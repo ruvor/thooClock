@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>jQuery thooClock Plugin</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .container {
+                text-align: center;
+            }
+            canvas {
+               max-width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div id="myclock"></div>
+        </div>
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="js/jquery.thooClock.js"></script>
+        <script>
+            const tzOffset = 20700000;
+            $('#myclock').thooClock({
+                size: 400,
+                brandText: 'Москва',
+                tzOffset: tzOffset,
+            });
+        </script>
+    </body>
+</html>
