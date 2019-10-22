@@ -20,14 +20,6 @@
                 defaults,
                 settings,
                 radius,
-                dialColor,
-                dialBackgroundColor,
-                secondHandColor,
-                minuteHandColor,
-                hourHandColor,
-                alarmHandColor,
-                alarmHandTipColor,
-                hourCorrection,
                 x,
                 y;
 
@@ -403,11 +395,8 @@
                     hours,
                     mins,
                     h,
-                    exth,
-                    extm,
                     allExtM,
-                    allAlarmM,
-                    atime;
+                    allAlarmM;
 
                 theDate = new Date();
                 s = theDate.getSeconds();
