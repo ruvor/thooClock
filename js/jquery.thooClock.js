@@ -114,7 +114,7 @@
             }     
 
             function getBrandTextFont() {
-                return '100 ' + parseInt(el.size / 8, 10) + 'px helvetica';
+                return '100 ' + parseInt(el.size / 8, 10) + 'px sans-serif';
             }
 
             function drawDial(color, bgcolor){
@@ -132,9 +132,7 @@
                     ny,
                     text,
                     textSize,
-                    textWidth,
-                    brandtextWidth,
-                    brandtextWidth2;
+                    textWidth;
 
                 dialRadius = parseInt(radius-(el.size/50), 10);
                 dialBackRadius = radius-(el.size/400);
@@ -144,8 +142,11 @@
                 ctx.fillStyle = bgcolor;
                 ctx.fill();
 
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
                 var wideLoad = false;
-                if (el.brandText !== undefined){
+                if (el.brandText) {
                     ctx.font = getBrandTextFont();
                     if (ctx.measureText(el.brandText).width > el.size * .6) {
                         wideLoad = true;
@@ -162,19 +163,17 @@
                         sx = sang * (dialRadius - dialRadius/9);
                         sy = cang * -(dialRadius - dialRadius/9);
                         ex = sang * dialRadius;
-                        ey = cang * - dialRadius;
+                        ey = cang * -dialRadius;
                         nx = sang * (dialRadius - dialRadius/4.2);
                         ny = cang * -(dialRadius - dialRadius/4.2);
                         text = i/5;
-                        ctx.textBaseline = 'middle';
                         textSize = parseInt(el.size/13,10);
-                        ctx.font = '100 ' + textSize + 'px helvetica';
-                        textWidth = ctx.measureText (text).width;
-                        ctx.beginPath();
+                        ctx.font = '100 ' + textSize + 'px sans-serif';
+                        textWidth = ctx.measureText(text).width;
                         ctx.fillStyle = color;
 
                         if (el.showNumerals && (!wideLoad || (i !== 20 && i !== 40))) {
-                            ctx.fillText(text,nx-(textWidth/2),ny);
+                            ctx.fillText(text, nx, ny);
                         }
                     //minute marker
                     } else {
@@ -193,26 +192,10 @@
                     ctx.stroke();
                 }
 
-                if(el.brandText !== undefined){
+                if (el.brandText) {
                     ctx.font = getBrandTextFont();
-                    brandtextWidth = ctx.measureText(el.brandText).width;
-                    var maxTextWidth = el.size * .8;
-                    if (brandtextWidth > maxTextWidth) {
-                        brandtextWidth = maxTextWidth;
-                    }
-                    ctx.fillText(el.brandText,-(brandtextWidth/2),(el.size/6), brandtextWidth);
+                    ctx.fillText(el.brandText, 0, el.size/6, el.size * .8);
                 }
-
-                if(el.brandText2 !== undefined){
-                    ctx.textBaseline = 'middle';
-                    ctx.font = '100 ' + parseInt(el.size/44,10) + 'px helvetica';
-                    brandtextWidth2 = ctx.measureText (el.brandText2).width;
-                    if (brandtextWidth2 > maxTextWidth) {
-                        brandtextWidth2 = maxTextWidth;
-                    }
-                    ctx.fillText(el.brandText2,-(brandtextWidth2/2),(el.size/5), brandtextWidth2);
-                }
-
             }
 
 
