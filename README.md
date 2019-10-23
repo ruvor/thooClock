@@ -5,6 +5,8 @@ a jQuery analogue clock plugin with alarm function.
 
 <a href="http://www.smart-sign.com/thooclock">visit the site</a>
 
+Поправочка: исправил и подкрутил для использования в InCommand'е. В оригинале лицензии никакой не было, поэтому было решено его использовать с нужными модификациями. Он кривоват, но работу свою делает. Спасибо Thomas'у.
+
 Implementation
 --------------
 
